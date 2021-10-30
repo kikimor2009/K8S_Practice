@@ -1,0 +1,25 @@
+kubectl apply -f deployment.yaml
+kubectl get deploy
+kubectl get deploy --show-labels
+kubectl get deploy -n ${NS_NAME}
+kubectl get deploy -o yaml
+kubectl describe deploy -n ${NS_NAME}
+kubectl delete deploy ${NS_NAME}
+kubectl get rs -n milky-way -o wide
+
+
+kubectl create deployment easy-peasy --image=busybox:1.32 --replicas=5  --dry-run=client -o yaml -- sleep infinity
+
+#or simply edit deploy file and re-apply
+kubectl edit deployments.apps nginx-deploy
+kubectl scale --replicas=5 deployment nginx-deploy
+
+kubectl create -f azbykovskyi-app.yam
+
+kubectl set image {RESOURCE_TYPE}/{RESOURCE_NAME} {CONTAINER_NAME}={NEW_IMAGE}
+kubectl set image deployment/nginx-deploy nginx=nginx:1.17-alpine --record
+
+kubectl rollout undo 
+kubectl rollout undo deployment.v1.apps/nginx-deployment --to-revision=2
+kubectl rollout status deployment/nginx-deploymen
+kubectl rollout history deployment.v1.apps/nginx-deployment

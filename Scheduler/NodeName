@@ -1,0 +1,15 @@
+#Scheduling Pod on a Specific Node
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+spec:
+  nodeName: << node hostname >>
+  containers:
+  - name: main
+    image: busybox
+    command:
+    - sleep
+    - infinity
+

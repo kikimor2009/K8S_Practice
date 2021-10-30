@@ -1,0 +1,8 @@
+kubectl patch serviceaccount default -n my-namespace \
+  --patch '{
+    "imagePullSecrets": [
+      {
+        "name": "registry-cred"
+      }
+    ]
+  }'

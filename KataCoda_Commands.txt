@@ -1,0 +1,70 @@
+## Single node cluster ##
+
+kubectl cluster-info
+kubectl get nodes
+kubectl create deployment first-deployment --image=katacoda/docker-http-server
+kubectl get pods # you can spec namespaces to view. -n  || --all-namespaces
+kubectl get deployments
+kubectl expose deployment first-deployment --port=80 --type=NodePort
+kubectl get services first-deployment
+minikube addons enable dashboard
+kubectl apply -f /opt/kubernetes-dashboard.yaml
+
+## Multi node cluster ##
+
+kubeadm version
+kubeadm init --token=102952.1a7dd4cc8d1f4cc5 --kubernetes-version $(kubeadm version -o short)  # in prod its better to exclude token
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+export KUBECONFIG=$HOME/admin.conf
+
+Deploy CNI 
+
+kubeadm token list
+kubeadm join --discovery-token-unsafe-skip-ca-verification --token=102952.1a7dd4cc8d1f4cc5 172.17.0.29:6443 # to execute on slave
+
+To label nodes with worker 
+kubectl label node <node_name> node-role.kubernetes.io/worker=worker
+
+docker ps | grep docker-http-server
+
+## Minikube commands ##
+
+minikube ip 
+minikube ssh
+minikube delete
+
+Keep in mind the minikube tool is for administering the hosting of the cluster where
+kubectl tool is for administering Kubernetes itself,
+regardless of where Kubernetes is running. In the beginning,
+it may take some time to keep the purpose of these commands separate.
+
+kubectl get nodes -o wide 
+kubectl get componentstatus
+kubectl cluster-info
+kubectl config view
+kubectl describe node minikube == more detailed info 
+
+kubectl top node == only if metrics server if on 
+kubectl top pods --all-namespaces
+
+minikube service list
+kubectl get service kubernetes-dashboard-katacoda -n kubernetes-dashboard == spec always namespace or search in default
+
+kubectl create namespace sandbox-b
+kubectl label namespace sandbox-a group=development
+kubectl describe namespace sandbox-a
+
+kubectl expose deployment hello --type=NodePort
+kubectl get namespaces --show-labels
+
+kubectl get  [] -n 
+            rs = replica set 
+            all
+            ns = namespaces
+
+kubectl label ns exam-check-01 created_by=Artur_Zbykovskyi
+kubectl get ns --show-labels 
+kubectl get pods -n exam-check-01 --no-headers -o wide

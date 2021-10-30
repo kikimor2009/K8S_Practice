@@ -1,0 +1,63 @@
+kubectl get po
+kubectl get pod
+kubectl get pods -l labelname=value
+
+kubectl get po ${POD_NAME} -o yaml
+kubectl describe po ${POD_NAME}
+
+kubectl get pods --all-namespaces
+kubectl get pods -A
+kubectl get pods -n ${NS_NAME}
+kubectl get pods ${POD_NAME}
+kubectl get pods ${POD_NAME} -n ${NS_NAME}
+kubectl get pods ${POD_NAME} -o yaml
+kubectl get pods ${POD_NAME} -o wide
+
+kubectl describe pods ${POD_NAME} 
+kubectl describe pods ${POD_NAME} -n ${NS_NAME} 
+
+kubectl apply -f pod-manifest.yaml
+kubectl delete -f pod-manifest.yaml
+
+kubectl run ${POD_NAME} [-n ${NS_NAME}] --image=${POD_IMAGE}
+kubectl run ${POD_NAME} [-n ${NS_NAME}] --image=${POD_IMAGE} -- {command}
+kubectl run ${POD_NAME} [-n ${NS_NAME}] --image=${POD_IMAGE} --command {command}
+
+
+kubectl get pod nginx-pod -o jsonpath='{.spec.containers[*].ports}'
+kubectl get pods -n wonderland -o json | grep -i initCont*
+
+kubectl get pod -n db redis-db -o yaml > redis.yaml
+kubectl delete pod -n db redis-db 
+kubectl apply -f redis.yaml 
+
+kubectl run {pod_name} --image {image_name} -- {command} {args} -- to create pod
+kubectl run {pod_name} --image {image_name} --command {command} {args}
+kubectl run {pod_name} --image {image_name} --dry-run=client -o yaml
+kubectl run my_app --image {image_name} --dry-run=client -o yaml -- {command} {args}
+
+kubectl edit pod {pod_name} - not really good
+kubectl set image pod {pod_name} {container_name}={new_image} -- usually for deplyments but 
+kubectl get pod {pod_name} -o yaml > pod.yaml
+vim pod.yaml
+kubectl delete -f pod.yaml
+kubectl apply -f pod.yaml
+
+kubectl logs i-know-who-i-am
+
+kubectl delete pod foo --grace-period=1
+kubectl delete -f ./pod.json
+kubectl delete pod,service baz foo
+kubectl delete pods --all --now --force
+
+kubectl cp <some-namespace>/<some-pod>:/tmp/foo /tmp/bar
+kubectl cp /tmp/foo <some-namespace>/<some-pod>:/tmp/bar
+
+kubectl get pods -w --namespace default
+
+
+kubectl exec -it test -- /bin/sh
+kubectl run test --image busybox:1.28 -i --tty --rm -- sh
+kubectl run -it test --image busybox:1.28 -- sh
+kubectl run --rm -it test --image=busybox:1.27 --restart=Never nslookup normal-service
+echo nslookup pod-info-svc | kubectl run test --image busybox:1.27 -i --rm -- sh

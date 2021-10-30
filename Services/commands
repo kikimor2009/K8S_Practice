@@ -1,0 +1,14 @@
+kubectl get svc pod-info-svc -o wide
+
+kubectl describe ep pod-info-svc
+kubectl describe svc -n <<namespace name>> <<service name>>
+
+kubectl get ep
+kubectl describe ep -n <<namespace name>> <<service name>>
+
+kubectl expose deployment <<deployment name>> \
+  -n <<namespace name>> \
+  --name <<svc name>> \
+  --type <<svc type>> \
+  --port <<svc port>> \
+  --target-port <<svc targetPort == pod container port>>

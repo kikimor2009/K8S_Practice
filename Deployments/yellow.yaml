@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yellow-color
+spec:
+  selector:
+    matchLabels:
+      color: yellow
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        color: yellow
+        switch: ok
+    spec:
+      containers:
+      - name: color
+        image: sbeliakou/color
+        ports:
+        - containerPort: 80
+        env:
+        - name: COLOR
+          value: yellow
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yellow-svc
+spec:
+  selector:
+    color: yellow
+  ports:
+    - port: 8080
+      targetPort: 80

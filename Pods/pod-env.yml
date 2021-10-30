@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: envar-demo
+  labels:
+    purpose: demonstrate-envars
+spec:
+  containers:
+  - name: envar-demo-container
+    image: gcr.io/google-samples/node-hello:1.0
+    env:
+    - name: DEMO_GREETING
+      value: "Hello from the environment"
+
+---
+...
+spec:
+  containers:
+  - name: container-name
+    env:
+    - name: ENV_VARIABLE_NAME
+      valueFrom:
+        configMapKeyRef:
+          name: configmap-name
+          key: configmap-key
+    ...
+...
+
+...
+spec:
+  containers:
+  - name: container-name
+    envFrom:
+    - configMapRef:
+        name: configmap-name
+...

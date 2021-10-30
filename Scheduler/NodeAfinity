@@ -1,0 +1,52 @@
+#requires the pod be placed on a node with a label whose key is e2e-az-NorthSouth and whose value is either e2e-az-North or e2e-az-South
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity:
+    nodeAffinity: 
+      requiredDuringSchedulingIgnoredDuringExecution: 
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: e2e-az-NorthSouth 
+            operator: In 
+            values:
+            - e2e-az-North 
+            - e2e-az-South 
+  containers:
+  - name: with-node-affinity
+    image: docker.io/ocpqe/hello-pod
+
+    -------------
+
+# preferred rule that a node with a label whose key is e2e-az-EastWest and whose value
+is either e2e-az-East or e2e-az-West is preferred for the pod.
+Here 80 and 20 means that 80% of replicas should be landed in e2e-az-East and 20% in e2e-az-West regions:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity:
+    nodeAffinity: 
+      preferredDuringSchedulingIgnoredDuringExecution: 
+      - weight: 80
+        preference:
+          matchExpressions:
+          - key: e2e-az-EastWest 
+            operator: In 
+            values:
+            - e2e-az-East 
+      - weight: 20
+        preference:
+          matchExpressions:
+          - key: e2e-az-EastWest 
+            operator: In 
+            values:
+            - e2e-az-West 
+  containers:
+  - name: with-node-affinity
+    image: docker.io/ocpqe/hello-pod

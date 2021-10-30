@@ -1,0 +1,56 @@
+#Using ConfigMaps Keys as Environment Variables
+apiVersion: v1
+kind: Pod
+metadata:
+  name: user-pod
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox
+    command: ['sh', '-c', 'leep 4800'] 
+    env:
+      - name: USER1
+        valueFrom:
+          configMapKeyRef:
+            name: users-cm
+            key: user1
+      - name: USER2
+        valueFrom:
+          configMapKeyRef:
+            name: users-cm
+            key: user2
+
+---
+#Using ALL ConfigMaps Keys as Environment Variables
+apiVersion: v1
+kind: Pod
+metadata:
+  name: team-pod
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox
+    command: ['sh', '-c', 'sleep 4800']
+    envFrom:
+      - configMapRef:
+            name: users-cm
+
+---
+#Using ConfigMap Keys as Files
+apiVersion: v1
+kind: Pod
+metadata:
+  name: team-volume-pod
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox
+    command: ['sh', '-c', 'sleep 3600']
+    volumeMounts:
+      - name: team-volume
+        mountPath: /data/team-members
+
+  volumes:
+    - name: team-volume
+      configMap:
+        name: users-cm

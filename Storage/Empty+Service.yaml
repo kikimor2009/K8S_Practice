@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat-with-init-emptydir
+  labels:
+    app: tomcat
+spec:
+  initContainers:
+  - image: busybox
+    name: init-busy
+    command: ['/bin/sh', '-c']
+    args: ["wget -O /webapps/ROOT/index.jsp https://playpit-labs-assets.s3-eu-west-1.amazonaws.com/tomcat/index.jsp"]
+    command: ['wget']
+    args: ['https://playpit-labs-assets.s3-eu-west-1.amazonaws.com/tomcat/index.jsp', '-O/webapps/ROOT/index.jsp']
+    command: ["/bin/sh","-c"]
+    args: ["command one; command two && command three"]
+    volumeMounts:
+    - mountPath: /webapps/ROOT/
+      name: shared-pod-volume
+
+  containers:
+    - image: tomcat:9.0-jre8-alpine
+      name: tomcat
+      volumeMounts:
+      - mountPath: /usr/local/tomcat/webapps/ROOT
+        name: shared-pod-volume
+
+  volumes:
+    - name: shared-pod-volume
+      emptyDir: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-with-init-emptydir-svc
+spec:
+  type: NodePort
+  selector:
+    app: tomcat
+  ports:
+    - nodePort: 30080
+      port: 8080
+      targetPort: 8080

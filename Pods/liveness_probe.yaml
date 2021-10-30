@@ -1,0 +1,74 @@
+---
+# liveness command 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcr.io/busybox
+    args:
+    - /bin/sh
+    - -c
+    - |
+      touch /tmp/healthy
+      sleep 30
+      rm -rf /tmp/healthy
+      sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5 == first delay
+      periodSeconds: 5 == how often kubelet should perform probes
+
+---
+#  TCP liveness probe
+apiVersion: v1
+kind: Pod
+metadata:
+  name: goproxy
+  labels:
+    app: goproxy
+spec:
+  containers:
+  - name: goproxy
+    image: k8s.gcr.io/goproxy:0.1
+    ports:
+        - name: app_port
+          containerPort: 8080
+    livenessProbe:
+      tcpSocket:
+        port: 8080
+        # or by port name:
+        # port: app_port
+      initialDelaySeconds: 15
+      periodSeconds: 20
+
+---
+  # liveness HTTP request
+  apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-http
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcr.io/liveness
+    args:
+      - /server
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+        httpHeaders:
+          - name: Custom-Header
+            value: Awesome
+      initialDelaySeconds: 3
+      periodSeconds: 3

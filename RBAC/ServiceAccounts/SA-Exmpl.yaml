@@ -1,0 +1,12 @@
+apiVersion: v1
+imagePullSecrets:
+- name: docker-private-registry
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2021-08-11T08:24:05Z"
+  name: private-registry
+  namespace: default
+  resourceVersion: "3694"
+  uid: d3166443-8146-4539-a808-84160307c249
+secrets:
+- name: private-registry-token-g95c9

@@ -1,0 +1,75 @@
+kubectl create ns staging
+-------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookshelf
+  namespace: staging
+spec:
+  selector:
+    matchLabels:
+      app: book
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: book
+    spec:
+      containers:
+      - name: book
+        image: sbeliakou/bookshelf
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookshelf-svc
+  namespace: staging
+spec:
+  selector:
+    app: book
+  ports:
+    - port: 8090
+      nodePort: 31122
+  type: NodePort
+
+  -------------------------------------
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bookshelf-ingress
+  namespace: staging
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: bookshelf-svc
+            port:
+              number: 8090
+
+
+
+
+
+
+
+
+
+    tolerations:
+      - effect: NoSchedule
+        key: env
+        value: nonprod
+      - key: node
+        value:
+        operator: Exists
+        effect: NoSchedule
+      - key: env
+        value: production
+        effect: NoSchedule

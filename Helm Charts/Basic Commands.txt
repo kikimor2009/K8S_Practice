@@ -1,0 +1,25 @@
+#Adds repo to the helm
+helm repo add bitnami https://charts.bitnami.com/bitnami 
+
+#Searches the repo 
+helm search repo bitnami
+
+#Install chart . Dont forget to update before 
+helm repo update              # Make sure we get the latest list of charts
+helm install bitnami/mysql --generate-name
+===
+Whenever you install a chart, a new release is created. So one chart can be installed multiple times into the same cluster.
+And each can be independently managed and upgraded.
+===
+
+#To get full information about helm chart use 
+helm show all bitnami/mysql
+
+#What has been released
+helm list 
+helm ls
+
+#To uninstall release
+helm uninstall <name>
+If the flag --keep-history is provided, release history will be kept. You will be able to request information about that release
+Because Helm tracks your releases even after you've uninstalled them, you can audit a cluster's history, and even undelete a release (with helm rollback)

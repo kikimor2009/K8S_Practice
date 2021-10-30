@@ -1,0 +1,11 @@
+kubectl get pv
+kubectl get pv <<pv name>> -o yaml
+kubectl describe pv <<pv name>>
+
+kubectl patch storageclass <storage-class-name> -p '{
+  "metadata": {
+    "annotations": {
+      "storageclass.kubernetes.io/is-default-class":"true"
+    }
+  }
+}'

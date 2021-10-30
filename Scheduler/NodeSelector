@@ -1,0 +1,27 @@
+#Scheduling Pod on a Node by its Label
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command:
+    - sleep
+    - "300"
+  nodeSelector:
+    kubernetes.io/os: linux
+
+# Prepopulated labels 
+
+kubernetes.io/hostname
+failure-domain.beta.kubernetes.io/zone
+failure-domain.beta.kubernetes.io/region
+topology.kubernetes.io/zone
+topology.kubernetes.io/region
+beta.kubernetes.io/instance-type
+node.kubernetes.io/instance-type
+kubernetes.io/os
+kubernetes.io/arch

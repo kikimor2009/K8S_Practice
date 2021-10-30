@@ -1,0 +1,91 @@
+#create a key and certificate signing request (CSR) for azbykovskyi’s access to the cluster using openssl:
+
+openssl req -new -newkey rsa:2048 -nodes -days 3650 \
+>     -subj "/C=BY/ST=Minsk/L=Minsk/O=Artur Zbykovskyi Corp PLC/OU=IT/CN=azbykovskyi" \
+>     -keyout azbykovskyi.key \
+>     -out azbykovskyi.csr
+
+#give these two files to Cluster Admin
+scp ~/azbykovskyi/azbykovskyi.csr master:/requests/azbykovskyi/
+scp ~/azbykovskyi/azbykovskyi.key master:/requests/azbykovskyi/
+
+# to approve csr in master you need\
+kubectl certificate approve azbykovskyi
+
+==== Generate cluster config for user ====
+
+#1 We need to find Cluster’s CA Certificate:
+    #from kube-public ns
+        kubectl get cm -n kube-public kube-root-ca.crt -o jsonpath='{.data.ca\.crt}'
+        kubectl get cm -n kube-public kube-root-ca.crt -o jsonpath='{.data.ca\.crt}' > ca.crt
+    #from admins kubeconfig
+        kubectl config view --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' | base64 -d
+        master:~# kubectl config view --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' | base64 -d > ca.crt
+
+#2 Setting Cluster name, Server, Cluster CA:
+        kubectl config --kubeconfig=/requests/azbykovskyi/azbykovskyi.kubeconfig \
+  set-cluster $(kubectl config view -o jsonpath='{.clusters[0].name}') \
+  --server=$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}') \
+  --certificate-authority=ca.crt \
+  --embed-certs=true
+
+#3 Setting Context, Username
+        kubectl config --kubeconfig=/requests/azbykovskyi/azbykovskyi.kubeconfig \
+  set-context azbykovskyi \
+  --user=azbykovskyi \
+  --cluster=$(kubectl config view -o jsonpath='{.clusters[0].name}')
+        kubectl config --kubeconfig=/requests/azbykovskyi/azbykovskyi.kubeconfig \
+  use-context azbykovskyi
+
+#4 Add user’s certificate signed by Cluster:
+        kubectl get csr azbykovskyi -o jsonpath='{.status.certificate}' | base64 -d > azbykovskyi.pem
+        kubectl --kubeconfig=/requests/azbykovskyi/azbykovskyi.kubeconfig config \
+  set-credentials azbykovskyi \
+  --client-certificate=azbykovskyi.pem \
+  --client-key=azbykovskyi.key \
+  --embed-certs=true
+
+#5 Copy azbykovskyi.kubeconfig file to the client host
+    #master ==> scp azbykovskyi.kubeconfig client:/tmp/
+    #client ==> mkdir -p ~/.kube
+                mv /tmp/azbykovskyi.kubeconfig ~/.kube/config
+    
+
+==== Create clusterRole & Binding ====
+kubectl create clusterrole node-viewer \
+  --resource=nodes \
+  --verb=list,get
+kubectl create clusterrolebinding node-viewer \
+  --clusterrole=node-viewer \
+  --user=azbykovskyi
+
+
+kubectl --kubeconfig=azbykovskyi.kubeconfig get nodes
+
+# Using Client Config
+kubectl --kubeconfig=azbykovskyi.kubeconfig auth can-i list nodes
+yes
+
+# Using Admin Config
+kubectl auth can-i list nodes --as=azbykovskyi
+yes
+
+kubectl create -n default role pod-viewer \
+  --resource=pods \
+  --verb=list,get,watch
+
+kubectl create -n default rolebinding pod-viewer \
+  --role=pod-viewer \
+  --user=azbykovskyi
+
+  kubectl create -n default role developer \
+  --resource=deployments \
+  --verb=get,list,watch,create,update,patch,delete
+
+kubectl create -n default rolebinding developer \
+  --role=developer \
+  --user=azbykovskyi
+
+
+
+  

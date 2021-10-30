@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azbykovskyi-app
+  labels:
+    app: azbykovskyi-app
+    student: azbykovskyi
+spec:
+  selector:
+    matchLabels:
+      deploy: azbykovskyi-app
+  template:
+    metadata:
+      labels:
+        deploy: azbykovskyi-app
+        kind: redis
+        role: master
+        tier: db
+    spec:
+      initContainers:
+      - name: init-cont
+        image: busybox
+        command: ['sh', '-c', 'sleep 10']
+      containers:
+      - name: redis-master
+        image: redis:3.2-alpine
+        ports:
+        - containerPort: 6379

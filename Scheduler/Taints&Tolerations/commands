@@ -1,0 +1,18 @@
+# This means that no pod will be able to schedule onto node1 unless it has a matching toleration.
+kubectl taint nodes node1 key1=value1:NoSchedule
+
+kubectl taint nodes node1 key1:NoSchedule-
+
+#To get all tains on all nodes use the command:
+kubectl describe nodes node01 | grep -i ^tain
+kubectl get nodes -o json | jq '.items[].spec.taints'
+kubectl get node << node name >> -o json | jq '.spec.taints'
+
+====== On pod site: =======
+
+tolerations:
+- key: "key1"
+  operator: "Equal"
+  value: "value1"
+  effect: "NoSchedule"
+
