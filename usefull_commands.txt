@@ -1,0 +1,13 @@
+How to find Spark pods spin up by Airflow DAG running from s-egap-platmetrics systems account:
+
+Will return name of Spark pods owned by segap* 
+
+{
+    kubectl get pods -o json -n jupyter | jq '.items[].metadata | select(.ownerReferences != null) | select(.ownerReferences[].name| test("segap."))|.name'
+}
+
+Will return ownerReferences.name, it will contain DAG and Task name, for instance
+
+{
+    kubectl get pods -o json -n jupyter | jq '.items[].metadata | select(.ownerReferences != null) | select(.ownerReferences[].name| test("segap."))|.ownerReferences[].name'
+}
