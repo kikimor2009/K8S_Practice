@@ -1,0 +1,75 @@
+kubectl get pods --all-namespaces -o jsonpath=\
+'{range .items[*]}{"\n"}{.metadata.name}{":\t"}{.metadata.namespace}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' | sort
+
+
+
+kubectl get pods -n logging -o jsonpath=\
+'{range .items[*]}{"\n"}{.metadata.name}{":\t"}{.metadata.namespace}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{":\t"}{range .spec.initContainers[*]}{.image}{", "}{end}{":\t"}{end}' 
+\
+| sort
+
+
+kubectl get po -A -o jsonpath=\
+'{range .items[*]}{"\n"}{.metadata.name}{"\t"}{.metadata.namespace}{"\t"}{range .spec.containers[*]}{.image}{", "}{end}{"\t"}{range .spec.initContainers[*]}{.image}{", "}{end}{"\n"}{end}' | column -ts '\t'
+
+
+kubectl get po -A -o jsonpath=\
+'{range .items[*]}{"\n"}{.metadata.name}{"\t"}{.metadata.namespace}{"\t"}{range .spec.containers[*]}{.image}{","}{end}{"\t"}{range .spec.initContainers[*]}{.image}{","}{end}{"\t"}{":::\n"}{end}' | column -t -s $'\t'
+
+
+kubectl get po -A -o jsonpath=\
+'{range .items[*]}{"\n"}{.metadata.name}{"\t"}{.metadata.namespace}{"\t"}{range .spec.containers[*]}{.image}{","}{end}{"\t"}{range .spec.initContainers[*]}{.image}{","}{end}{"\t"}{":::\n"}{end}' | column -t -s $'\t' > ~/Desktop/eks-egap-analytics.txt
+
+
+(?:(?=[^\r\n])\s)
+
+
+
+public-docker-virtual.artylab.expedia.biz/thirdparty/quay.io/argoproj/argocli:v3.2.6
+
+spark namespace have a look, strange docker images - spark-operator
+
+
+
+.*(\sdremio\s).*
+
+(\s)+:
+\t\t\t:
+
+,(\s)+\b
+,\t\t
+
+
+
+.*jupyter\s{13}67.*,\t\t\t:.*
+
+^$\n
+
+
+docker login public-docker-virtual.artylab.expedia.biz
+
+
+name: hub-docker-remote.artylab.expedia.biz/bitnami/postgresql
+pullSecrets:
+     - artifactory-hub-docker-remote
+
+
+ Failed to pull image "hub-docker-remote.artylab.expedia.biz/traefik:2.1.3": rpc error: code = Unknown desc = Error response from daemon: Head "https://hub-docker-remote.artylab.expedia.biz/v2/traefik/manifests/2.1.3": unknown: Authentication is required
+
+curl -g -i -v 'https://prometheus.egap-eks-us-east-1.egdp-dev.aws.away.black/api/v1/admin/tsdb/delete_series?' --data-urlencode 'match[]={__name__=~".*_spark_application_.*"}'
+
+curl -g -i -v -X GET 'https://prometheus.egap-eks-us-east-1.egdp-dev.aws.away.black/api/v1/series?' --data-urlencode 'match[]={__name__=~".*_spark_application_.*"}' -o ~/Desktop/spark_names_dev.json
+
+curl -v -k -g -i 'https://prometheus.egap-eks-us-east-1.egdp-dev.aws.away.black/api/v1/series?' --data-urlencode 'match[]={__name__=~".*_spark_application_.+"}' -o ~/Desktop/spark_names_dev.json
+
+curl -X POST -g 'https://prometheus.egap-eks-us-east-1.egdp-dev.aws.away.black/api/v1/admin/tsdb/delete_series?match[]={__name__=~".*_driver_.*"}'
+
+curl -i -v -k -X POST -g 'https://prometheus.egap-eks-us-east-1.egdp-dev.aws.away.black/api/v1/admin/tsdb/clean_tombstones'
+curl -i -k -v -X POST -g 'https://prometheus.egap-eks-us-east-1.egdp-dev.aws.away.black/api/v1/admin/tsdb/delete_series?match[]={__name__=~".*_driver_.*"}'
+
+rm -rf ~/.kube/cache
+rm -rf ~/.kube/http-cache 
+
+We may need to clear the cache especially when you tried many different ways. You must be logged in to the server (Unauthorized) error
+
+

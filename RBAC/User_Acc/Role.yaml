@@ -2,8 +2,39 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   namespace: default
-  name: pod-reader
+  name: reader
 rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["pods"]
-  verbs: ["get", "watch", "list"]
+  - apiGroups: [""] # "" indicates the core API group
+    resources:
+      - "pods"
+      - "pods/log"
+      - "services"
+      - "events"
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["apps"]
+    resources: 
+      - "statefulsets"
+      - "deployments"
+      - "replicasets"
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["batch"]
+    resources:
+      - "jobs"
+      - "cronjobs"
+    verbs: ["get", "watch", "list"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: reader-rb
+  namespace: default
+subjects:
+- kind: User
+  name: artur.zbykovskyi@sandsiv.com
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: reader
+  apiGroup: rbac.authorization.k8s.io
