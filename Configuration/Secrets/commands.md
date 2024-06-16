@@ -1,6 +1,9 @@
-kubectl get secrets 
+# General commands
 
-kubectl get secrets -n safe recipe5 -o json
+`kubectl get secrets`
+
+`kubectl get secrets -n safe recipe5 -o json`
+
 echo "ZmxvdXIsIHN1Z2FyIGFuZCA1IGFwcGxlcw==" | base64 --decode
 
 kubectl create secret generic my-secret --from-file=path/to/bar

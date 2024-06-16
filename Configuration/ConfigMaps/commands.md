@@ -1,13 +1,14 @@
-kubectl get configmap
-kubectl get cm
+# K8s commands examples
 
-kubectl describe configmap
-kubectl describe cm
+## Basic one
+
+kubectl get configmap (cm)
+
+kubectl describe configmap (cm)
 
 kubectl create configmap my-config --from-file=path/to/bar
 
-
-=========
+---
 $ cat configmap/game.properties
 enemies=aliens
 enemies.cheat.level=noGoodRotten
@@ -35,14 +36,15 @@ kind: ConfigMap
 metadata:
   ...
 
-$ kubectl get cm game-config -o jsonpath='{.data.game\.properties}'
+kubectl get cm game-config -o jsonpath='{.data.game\.properties}'
 enemies=aliens
 enemies.cheat.level=noGoodRotten
 lives=3
-===========
+
+---
 
 $ kubectl create cm palitra --from-literal=RED="#FF0000" --from-literal=GREEN="#00FF00"
-configmap/palitra created
+$ configmap/palitra created
 
 $ kubectl get cm palitra -o yaml
 apiVersion: v1
@@ -54,6 +56,4 @@ metadata:
   ...
 
 $ kubectl get cm palitra -o jsonpath='{.data.RED}'
-#FF0000
-
-
+'#FF0000'

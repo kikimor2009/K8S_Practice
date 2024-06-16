@@ -7,6 +7,10 @@ spec:
   containers:
     - name: test-container
       image: k8s.gcr.io/busybox
+      resources:
+        limits:
+          cpu: 1
+          memory: 500mb
       command: 
       - "/bin/sh"
       - "-c"
