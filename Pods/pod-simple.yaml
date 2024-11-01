@@ -9,14 +9,18 @@ spec:
   containers:
   - name: myapp-container
     image: busybox
+    resources:
+      limits:
+        cpu: 1
+        memory: 500mb
     command: ['sh', '-c', 'echo Hello Kubernetes! && sleep 3600'] 
-    command: ['sh', '-c', 'env && sleep infinity']
+    #command: ['sh', '-c', 'env && sleep infinity']
 
-    command: ["printenv"]
-    args: ["HOSTNAME", "KUBERNETES_PORT"]
+    #command: ["printenv"]
+    #args: ["HOSTNAME", "KUBERNETES_PORT"]
 
-    command: ["/bin/sh"]
-    args: ["-c", "while true; do echo hello; sleep 10;done"]
+    #command: ["/bin/sh"]
+    #args: ["-c", "while true; do echo hello; sleep 10;done"]
     
     env:
       - name: STUDENT_FIRST_NAME
